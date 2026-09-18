@@ -3,7 +3,7 @@
 > A modern, responsive anime discovery platform built with React, featuring anime browsing, search, detailed information, watchlists, and watched tracking.
 
 
-🔗 **Live Demo:** [AniFlix](YOUR-VERCEL-LINK)
+🔗 **Live Demo:** [AniFlix](aniflix-a-82bf.vercel.app)
 
 
 **AniFlix** is a frontend anime web application designed to provide a smooth and visually engaging experience for discovering and exploring anime. It uses the **AniList GraphQL API** to fetch anime information dynamically and provides client-side watchlist and watched functionality using browser storage.
