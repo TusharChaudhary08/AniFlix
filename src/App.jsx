@@ -10,7 +10,8 @@ import Search from './components/search'
 import Footer from './components/footer'
 import Watchlist from './components/watchlist'
 import Watched from './components/watched'
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
 
 
@@ -18,14 +19,22 @@ function App() {
   return (
     <>
 
-     <ScrollToTop/>
-   
+      <ScrollToTop />
+
       <Navbar />
-      <Outlet/>
+      <Outlet />
       <Footer />
 
 
 
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        theme="dark"
+        toastClassName="!w-[90vw] sm:!w-[350px] !text-xs sm:!text-sm !rounded-lg !text-xs sm:!text-sm !rounded-lg"
+
+     className="!top-24 !right-4"
+      />
 
     </>
   )

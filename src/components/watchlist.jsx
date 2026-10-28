@@ -1,20 +1,199 @@
 
 import React from "react";
-import { Link } from "react-router";
+import { useState, useMemo } from "react";
+import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
+
+import useAnimeData from "./hooks/useAnimeInfo";
 
 function Watchlist() {
+
+  const savedWatchlist = localStorage.getItem("watchlist");
+
+  const [watchlist, setWatchlist] = useState(() => JSON.parse(savedWatchlist) || []);
+
+
+  function removeAnimeId(id) {
+    const updatedWatchlist = watchlist.filter(
+      (animeId) => animeId !== id
+    );
+
+    localStorage.setItem("watchlist", JSON.stringify(updatedWatchlist));
+    setWatchlist(updatedWatchlist);
+    // message 
+    toast.success("Anime removed from watchlist!");
+  }
+
+  if (watchlist.length === 0) {
+    return(
+      <div className=" bg-[#050B18]">
+      <EmptyState />
+      </div>
+    )
+    
+    
+  }
+
+  return <WatchlistAnime watchlist={watchlist} removeAnimeId={removeAnimeId} />
+
+
+}
+
+function WatchlistAnime({ watchlist, removeAnimeId }) {
+
+  const query = `
+  query {
+    ${watchlist.map((id, index) => `
+      anime${index}: Media(id: ${id}) {
+        id
+        title {
+          english
+          romaji
+          }
+        coverImage{
+          large
+          }
+      }
+    `).join("")}
+  }
+
+`;
+  const variables = useMemo(()=>{return {}},[]);
+  const { data, loading, error } = useAnimeData(query, variables);
+
+  const animeList = Object.values(data || {})
+
+
+  if (error) {
+    return <p className="text-white">Failed to load anime.</p>;
+  }
+
   return (
     <>
-    <div className=" bg-[#050B18]">
-    <EmptyState type="watchlist"/>
-    </div>
-    
+      <div className=" bg-[#050B18] ">
+
+
+        <div className=' pt-30  mx-10 border-b-3 border-white/15'>
+
+          <div className='text-3xl max-sm:text-2xl pb-3'>
+            Watchlist
+          </div>
+
+        </div>
+
+        <div className='mt-10 mx-10 pb-30 grid justify-items-center grid-cols-2 gap-x-4 gap-y-10 max-sm:gap-x-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'>
+
+
+          {
+            loading ?
+              <AnimeCardSkeleton />
+              : animeList.length === 0 ?
+                (<EmptyState />)
+                :
+                (
+                  <>
+                    {animeList.map((animeData) => (
+                      <AnimeCard key={animeData.id} anime={animeData} removeAnimeId={removeAnimeId} />
+                    ))}
+                  </>
+                )
+
+
+          }
+
+        </div>
+
+
+
+
+      </div>
+
     </>
 
   )
 }
 
-export default Watchlist
+
+
+
+function AnimeCard({ anime, removeAnimeId }) {
+  const navigate = useNavigate();
+
+  return (
+    <div
+      id={anime?.id}
+      onClick={() => navigate(`/overview/${anime?.id}`)}
+      className="group flex flex-col w-fit text-center cursor-pointer transition-transform duration-300 lg:hover:scale-[1.06]"
+    >
+      {/* Anime Poster */}
+      <div className="relative w-45 h-65 max-lg:w-40 max-lg:h-55 max-md:w-40 max-md:h-55 max-sm:w-30 max-sm:h-45 rounded-xl overflow-hidden bg-gray-700">
+        <img
+          src={anime?.coverImage?.large}
+          alt={anime?.title?.english || anime?.title?.romaji}
+          className="w-full h-full object-cover object-center transition-transform duration-300 lg:group-hover:scale-105"
+        />
+
+        {/* Remove Button */}
+        <button
+          type="button"
+          aria-label="Remove from watchlist"
+          onClick={(e) => {
+            e.stopPropagation();
+            removeAnimeId(anime.id);
+          }}
+          className="absolute top-2 right-2 w-9 h-9 max-sm:w-8 max-sm:h-8 flex items-center justify-center rounded-full border border-red-300/25 bg-red-950/40 text-red-200/90 backdrop-blur-md shadow-lg transition-all duration-200 hover:bg-red-600/80 hover:border-red-300/60 hover:text-white hover:scale-110 active:scale-95"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            className="w-4 h-4"
+          >
+            <path
+              d="M5 5l14 14M19 5L5 19"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+      </div>
+
+      {/* Anime Title */}
+      <div className="w-45 max-lg:w-40 max-md:w-40 max-sm:w-30">
+        <h1 className="text-left text-sm max-sm:text-xs pt-2 line-clamp-2 font-semibold text-gray-100 leading-snug group-hover:text-white transition-colors">
+          {anime?.title?.english || anime?.title?.romaji}
+        </h1>
+      </div>
+    </div>
+  );
+}
+
+
+
+function AnimeCardSkeleton() {
+  return (
+    <>
+
+      {Array.from({ length: 4 }).map((_, index) => (
+
+        <div key={index}>
+          <div className="w-45 h-65 max-lg:w-40 max-lg:h-55 max-md:w-40 max-md:h-55 max-sm:w-30 max-sm:h-45 rounded-xl bg-white/20 overflow-hidden  backdrop:backdrop-blur-2xl animate-pulse"> </div>
+
+          <div className="mt-2">
+            <div className=" my-2 w-2/3 h-2 bg-white/20 rounded-2xl animate-pulse"></div>
+            <div className="my-2 w-1/2 h-2 bg-white/20 rounded-2xl animate-pulse"></div>
+            <div className="my-2 w-full h-2 bg-white/20 rounded-2xl animate-pulse"></div>
+            <div className="my-2 w-full h-2 bg-white/20 rounded-2xl animate-pulse"></div>
+          </div>
+
+        </div>
+
+
+      ))}
+    </>
+  );
+}
+
 
 
 function EmptyState({ type = "watchlist" }) {
@@ -27,7 +206,7 @@ function EmptyState({ type = "watchlist" }) {
       <div className="relative mb-6">
 
         {/* Glow */}
-        <div className="absolute inset-0 bg-cyan-400/10 blur-3xl rounded-full" />
+        {/* <div className="absolute inset-0 bg-cyan-400/10 blur-3xl rounded-full" /> */}
 
         <div className="relative w-28 h-28 rounded-3xl bg-[#0a1224] border border-white/10 flex items-center justify-center">
 
@@ -152,3 +331,4 @@ function EmptyState({ type = "watchlist" }) {
   );
 }
 
+export default Watchlist

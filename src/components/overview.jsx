@@ -13,6 +13,7 @@ import eyeSvg from "../assets/eye.svg"
 import playSvg from "../assets/youtube.svg"
 import useAnimeData from "./hooks/useAnimeInfo";
 import { useParams } from 'react-router';
+import { toast } from "react-toastify";
 
 function Overview() {
 
@@ -135,6 +136,68 @@ function Overview() {
 
 
 
+    function addToWatchlist() {
+        // retriving watchlist
+        const savedWatchlist = localStorage.getItem("watchlist");
+        // retriving watched list
+        const savedWatched = localStorage.getItem("watched");
+
+        // checking for watched
+        const watched = JSON.parse(savedWatched) || []
+
+        // removing the id from watched if its stored there
+        const updatedWatched = watched.filter((id) => id !== Number(animeId))
+        localStorage.setItem("watched", JSON.stringify(updatedWatched));
+
+        // checking for watched
+        const watchlist = JSON.parse(savedWatchlist) || []
+        // checking if that anime id is already in watchlist
+        const alreadyExist = watchlist.includes(Number(animeId))
+
+        if (alreadyExist) {
+            toast.info("Anime is already in your watchlist!");
+            return 
+        }
+        // pushing the id in array 
+        watchlist.push(Number(animeId));
+        // saving the array to local storage
+        localStorage.setItem("watchlist", JSON.stringify(watchlist))
+        // passing Message 
+        toast.success("Anime saved to watchlist!");
+
+    }
+
+
+    function markAsWatched() {
+        // retriving watchlist
+        const savedWatchlist = localStorage.getItem("watchlist");
+        // retriving watched list
+        const savedWatched = localStorage.getItem("watched");
+
+        // checking for watchlist
+        const watchlist = JSON.parse(savedWatchlist) || []
+
+        // removing the id from watchlist if its stored there
+        const updatedWatchlist = watchlist.filter((id) => id !== Number(animeId))
+        localStorage.setItem("watchlist", JSON.stringify(updatedWatchlist));
+
+        // checking for watched
+        const watched = JSON.parse(savedWatched) || []
+        // checking if that anime id is already in watchlist
+        const alreadyExist = watched.includes(Number(animeId))
+
+        if (alreadyExist) {
+            return
+        }
+
+        watched.push(Number(animeId));
+
+        localStorage.setItem("watched", JSON.stringify(watched))
+
+        // passing Message 
+        toast.success("Anime saved to watched list!");
+
+    }
 
 
     return (
@@ -295,12 +358,14 @@ function Overview() {
                     <div className='flex items-center justify-center '>
                         <div className='flex gap-5 max-md:flex-col'>
 
-                            <button className="px-4 p-1 flex items-center justify-center gap-3 rounded-full bg-[#54E1E6] text-[#050B18] border-3 border-black/60 active:scale-97 ease-in-out  transition-transform duration-150 cursor-pointer font-[600]">
+                            <button className="px-4 p-1 flex items-center justify-center gap-3 rounded-full bg-[#54E1E6] text-[#050B18] border-3 border-black/60 active:scale-97 ease-in-out  transition-transform duration-150 cursor-pointer font-[600]" 
+                            onClick={addToWatchlist}>
                                 <img src={plusSvg} alt="" className='w-5 h-5' />
                                 Add to Watchlist
                             </button>
 
-                            <button className=" px-4 p-1  flex items-center  justify-center gap-3 rounded-full bg-white text-[#050B18] border-3 border-black/60 active:scale-97 ease-in-out  transition-transform duration-150 cursor-pointer font-[600]">
+                            <button className=" px-4 p-1  flex items-center  justify-center gap-3 rounded-full bg-white text-[#050B18] border-3 border-black/60 active:scale-97 ease-in-out  transition-transform duration-150 cursor-pointer font-[600]"
+                            onClick={markAsWatched}>
                                 <img src={eyeSvg} alt="" className='w-5 h-5' />
                                 Mark as Watched
                             </button>
@@ -639,7 +704,7 @@ function Overview() {
                                             data?.Media?.characters?.edges.map((object) => (
                                                 <CharCard key={object.node.name.full} obj={object} />
                                             ))
-                                        
+
                                         )
 
                                     )
