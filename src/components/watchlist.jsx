@@ -174,7 +174,7 @@ function AnimeCardSkeleton() {
   return (
     <>
 
-      {Array.from({ length: 4 }).map((_, index) => (
+      {Array.from({ length: 6 }).map((_, index) => (
 
         <div key={index}>
           <div className="w-45 h-65 max-lg:w-40 max-lg:h-55 max-md:w-40 max-md:h-55 max-sm:w-30 max-sm:h-45 rounded-xl bg-white/20 overflow-hidden  backdrop:backdrop-blur-2xl animate-pulse"> </div>
