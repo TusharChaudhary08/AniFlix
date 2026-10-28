@@ -13,7 +13,6 @@
 ## ✨ Features
 
 * 🏠 **Dynamic Home Page**
-
   * Featured anime section
   * Trending anime
   * Popular anime
@@ -21,44 +20,44 @@
   * Responsive anime cards
 
 * 🔎 **Anime Search**
-
   * Search anime by title
   * Dynamic search results
   * Infinite scrolling / pagination
   * Loading states
 
 * 📖 **Anime Overview**
-
   * Anime poster and banner
   * Title information
   * Description
-  * Genres
-  * Ratings
+  * Genres and ratings
   * Characters
   * Trailer information
   * Recommendations
 
 * ❤️ **Watchlist**
-
   * Add anime to your personal watchlist
-  * Remove anime from watchlist
+  * Remove anime from your watchlist
   * Persistent data using LocalStorage
+  * Toast notifications when anime is added to or removed from the watchlist
 
-* ✅ **Watched**
-
+* ✅ **Watched Tracking**
   * Mark anime as watched
-  * Remove anime from watched list
+  * Remove anime from your watched list
   * Persistent browser storage
+  * Toast notifications for watched-list actions
+
+* 🔔 **Interactive Notifications**
+  * Real-time toast notifications using React Toastify
+  * Instant feedback for watchlist and watched actions
+  * Clear success messages when anime is added or removed
 
 * 📱 **Responsive Design**
-
   * Desktop
   * Tablet
   * Mobile
   * Adaptive navigation and layouts
 
 * 🎨 **Modern UI**
-
   * Dark anime-inspired theme
   * Glassmorphism elements
   * Smooth animations
@@ -67,15 +66,11 @@
   * Custom SVG icons and components
 
 * ⚡ **Performance-focused UI**
-
   * Lazy loading where appropriate
   * Optimized image assets
   * WebP image format
   * Reusable React components
   * Efficient API requests
-
----
-
 ## 🛠️ Tech Stack
 
 ### Frontend
